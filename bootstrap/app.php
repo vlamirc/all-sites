@@ -22,6 +22,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $exceptions->respond(function (Response $response): Response {
             if ($response->getStatusCode() === Response::HTTP_NOT_FOUND) {
+                $response->headers->remove('Cache-Control');
                 $response->setCache(['public' => true, 'max_age' => 300, 's_maxage' => 3600]);
             }
 
