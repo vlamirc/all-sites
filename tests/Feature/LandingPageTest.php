@@ -23,3 +23,23 @@ test('the landing page falls back to the app name when accessed by ip address', 
         ->assertOk()
         ->assertViewHas('siteName', 'Domain Dock');
 });
+
+test('the landing page can be cached by the edge network', function () {
+    $response = $this->get('http://acme.com/');
+
+    $response->assertOk()->assertHeaderMissing('Set-Cookie');
+
+    expect($response->headers->get('Cache-Control'))
+        ->toContain('public')
+        ->toContain('s-maxage=86400');
+});
+
+test('unknown paths return a not found page the edge network can cache', function () {
+    $response = $this->get('http://acme.com/.env.production');
+
+    $response->assertNotFound()->assertHeaderMissing('Set-Cookie');
+
+    expect($response->headers->get('Cache-Control'))
+        ->toContain('public')
+        ->toContain('s-maxage=3600');
+});
