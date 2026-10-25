@@ -41,5 +41,6 @@ test('unknown paths return a not found page the edge network can cache', functio
 
     expect($response->headers->get('Cache-Control'))
         ->toContain('public')
-        ->toContain('s-maxage=3600');
+        ->toContain('s-maxage=3600')
+        ->not->toContain('no-cache');
 });
